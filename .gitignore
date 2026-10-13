@@ -40,6 +40,7 @@
 
 # Build directories
 build/
+cmake-build-*/
 Build/
 build-*/
 
@@ -66,3 +67,6 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+remarkable
+BMP-info/main
