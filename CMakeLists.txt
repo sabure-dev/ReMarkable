@@ -6,13 +6,19 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(BMP-info)
 
+set(BMP_SOURCES
+    BMP-info/BMPReader.cpp
+    BMP-info/BMPEditor.cpp
+    BMP-info/BMPClass.cpp
+)
+
 add_executable(remarkable
     main.cpp
+    ${BMP_SOURCES}
 )
 
 enable_testing()
-
 add_test(NAME CLIHelpCheck COMMAND remarkable --help)
 
-add_executable(bmp_tests tests/test_bmp.cpp)
+add_executable(bmp_tests tests/test_bmp.cpp ${BMP_SOURCES})
 add_test(NAME BMPUnitTests COMMAND bmp_tests)
