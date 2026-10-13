@@ -35,17 +35,74 @@ jobs:
       - name: Generate Build Summary
         if: always()
         run: |
-          echo "## ReMarkable build status" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Stage | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
-          echo "| **CMake Configure** | \`${{ steps.configure.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Build (Release)** | \`${{ steps.build.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Tests (CTest)** | \`${{ steps.test.outcome }}\` |" >> $GITHUB_STEP_SUMMARY
+          cat << 'EOF' > report.md
+          <!-- ci-report-comment -->
+          ## ReMarkable Build Status
+
+          | Stage | Status |
+          | :--- | :--- |
+          | **CMake Configure** | `${{ steps.configure.outcome }}` |
+          | **Build (Release)** | `${{ steps.build.outcome }}` |
+          | **Tests (CTest)** | `${{ steps.test.outcome }}` |
+
+          EOF
+
+          if [ -f build/remarkable ]; then
+            SIZE=$(du -h build/remarkable | cut -f1)
+            echo "**Binary size:** \`$SIZE\`" >> report.md
+            echo "" >> report.md
+          fi
+
+          if [ -f build/ctest_output.log ]; then
+            echo "<details><summary>CTest Output Log</summary>" >> report.md
+            echo "" >> report.md
+            echo "\`\`\`text" >> report.md
+            cat build/ctest_output.log >> report.md
+            echo "\`\`\`" >> report.md
+            echo "</details>" >> report.md
+          fi
+
+          cat report.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Comment PR with Report
+        uses: actions/github-script@v7
+        if: always() && github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('report.md', 'utf8');
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner,
+              repo,
+              issue_number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.body && comment.body.includes('<!-- ci-report-comment -->')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: botComment.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body,
+              });
+            }
 
       - name: Publish Test Report
         uses: dorny/test-reporter@v1
-        if: steps.build.outcome == 'success'
+        if: always() && steps.build.outcome == 'success'
         with:
           name: CTest Results
           path: build/report.xml
