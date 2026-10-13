@@ -1,22 +1,24 @@
 #pragma once
 
-#include <string>
 #include <cstdint>
-#include "../BMP-info/BMPEditor.h"
-#include "../BMP-info/BMPHeader.h"
-#include "../BMP-info/BMPReader.h"
+#include <string>
+#include "BMPEditor.h"
+#include "BMPHeader.h"
+#include "BMPReader.h"
 
 class BMPImage {
 public:
     Image img;
-    
+
     BMPImage() = default;
 
     BMPImage(int32_t width, int32_t height) {
-        img.width = width;
-        img.height = height;
-        img.channels = 3;
-        img.data.assign(static_cast<size_t>(width) * height * 3, 0);
+        if (width > 0 && height > 0) {
+            img.width = width;
+            img.height = height;
+            img.channels = 3;
+            img.data.assign(static_cast<size_t>(width) * static_cast<size_t>(height) * 3, 0);
+        }
     }
 
     explicit BMPImage(const std::string& file_path) {
