@@ -3,19 +3,20 @@
 #include "BMPClass.h"
 #include "overlay.h"
 
-const double kAlpha = 0.4;
-const int32_t kCntChannels = 3;
+namespace{
+    const double kAlpha = 0.4;
+    const int32_t kCntChannels = 3;
 
-std::size_t PixelIndex(int32_t file_width, int32_t row, int32_t column){
-    std::size_t result = kCntChannels * (row * file_width + column);
-    return result;
+    std::size_t PixelIndex(int32_t file_width, int32_t row, int32_t column){
+        std::size_t result = kCntChannels * (row * file_width + column);
+        return result;
+    }
+
+    uint8_t Blend(uint8_t color_deg_source, uint8_t color_deg_watermark){
+        uint8_t color_deg_result = color_deg_source * (1 - kAlpha) + color_deg_watermark * kAlpha;
+        return color_deg_result;
+    }
 }
-
-uint8_t Blend(uint8_t color_deg_source, uint8_t color_deg_watermark){
-    uint8_t color_deg_result = color_deg_source * (1 - kAlpha) + color_deg_watermark * kAlpha;
-    return color_deg_result;
-}
-
 
 BMPImage overlayBMPFiles(const BMPImage& source_img, const BMPImage& watermark_img) {
     BMPImage output_img = source_img;
