@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "BMPClass.h"
+#include "overlay.h"
 
 void print_usage(const char* prog_name) {
     std::cout << "Usage: " << prog_name
@@ -13,8 +14,8 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    if (argc < 4) {
-        std::cerr << "Error: insufficient arguments.\n";
+    if (argc != 4) {
+        std::cerr << "Error: expected exactly 3 arguments.\n";
         print_usage(argv[0]);
         return 1;
     }
@@ -35,10 +36,17 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    // TODO - Student 2
+    if (watermark_img.get_width() > base_img.get_width() ||
+        watermark_img.get_height() > base_img.get_height()) {
+        std::cerr << "Warning: watermark is larger than the base image "
+                     "and will be cropped.\n";
+    }
+
+    std::cout << "Applying watermark...\n";
+    const BMPImage result_img = overlayBMPFiles(base_img, watermark_img);
 
     std::cout << "Saving result as: " << output_path << "...\n";
-    if (!base_img.save(output_path)) {
+    if (!result_img.save(output_path)) {
         return 1;
     }
 
