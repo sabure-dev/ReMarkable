@@ -30,6 +30,7 @@ jobs:
       - name: Run tests
         id: test
         run: |
+          set -o pipefail
           ctest --test-dir build --output-on-failure --output-junit report.xml | tee build/ctest_output.log
 
       - name: Generate Build Summary
