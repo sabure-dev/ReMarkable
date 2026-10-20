@@ -217,18 +217,6 @@ Manual check: open the result in any image viewer — the watermark must be visi
 
 ## Results
 
-### Case 1 — watermark smaller than the image (200x200 on 1000x1000)
-
-| Source | Watermark | Result |
-|:------:|:---------:|:------:|
-| ![source](docs/case1_source.png) | ![watermark](docs/case1_watermark.png) | ![result](docs/case1_result.png) |
-
-### Case 2 — watermark larger than the image (1000x1000 on 720x416)
-
-| Source | Watermark | Result |
-|:------:|:---------:|:------:|
-| ![source](docs/case2_source.png) | ![watermark](docs/case2_watermark.png) | ![result](docs/case2_result.png) |
-
 The watermark is cropped to the size of the base image; the output keeps the base image dimensions.
 
 Full-size BMP files for all cases (`case1`, `case2`, `case3` with equal sizes) are in [`examples/`](examples/). The PNG files in `docs/` are downscaled previews for this README.
@@ -269,5 +257,4 @@ int main() {
 - Configurable opacity (`alpha`) and watermark position (corner / centre / tiling) via CLI options.
 - Support for 8-, 32-bit and compressed BMP, or other formats (PNG, JPEG).
 - Transparency key colour, so a watermark with a solid background does not tint the whole rectangle.
-- Embedding invisible (steganographic) watermarks, e.g. in the least significant bits.
 - Larger automated test suite: golden-image comparison with `expected.bmp` in CI, tests for corrupted files.
