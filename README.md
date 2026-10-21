@@ -26,8 +26,6 @@ Team project built with Git and GitHub: shared repository, feature branches, cod
   - [Input Validation and Error Handling](#input-validation-and-error-handling)
   - [Testing](#testing)
   - [Results](#results)
-    - [Case 1 — watermark smaller than the image (200x200 on 1000x1000)](#case-1--watermark-smaller-than-the-image-200x200-on-1000x1000)
-    - [Case 2 — watermark larger than the image (1000x1000 on 720x416)](#case-2--watermark-larger-than-the-image-1000x1000-on-720x416)
   - [Web Demo](#web-demo)
   - [BMP Module API Example](#bmp-module-api-example)
   - [Possible Improvements](#possible-improvements)
